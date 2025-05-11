@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.project.platform.mapper.PetFeedMapper">
+    <!-- 分页查询 -->
+    <select id="queryPage"  resultType="com.project.platform.entity.PetFeed">
+        SELECT pet_feed.*,pet_type.name AS petTypeName,pet_store_manager.store_name AS storeName,user.username AS username,pet.name AS petName
+        FROM pet_feed
+        LEFT JOIN pet_type ON pet_feed.pet_type_id=pet_type.id
+        LEFT JOIN pet_store_manager ON pet_feed.pet_store_manager_id=pet_store_manager.id
+        LEFT JOIN user ON pet_feed.user_id=user.id
+        LEFT JOIN pet ON pet_feed.pet_id=pet.id
+        <include refid="queryConditions"/>
+        ORDER BY pet_feed.id DESC
+        LIMIT #{offset}, #{pageSize}
+    </select>
+    <!-- 查询总数 -->
+    <select id="queryCount"  resultType="int">
+        SELECT count(pet_feed.id) FROM pet_feed
+        LEFT JOIN pet_type ON pet_feed.pet_type_id=pet_type.id
+        LEFT JOIN pet_store_manager ON pet_feed.pet_store_manager_id=pet_store_manager.id
+        LEFT JOIN user ON pet_feed.user_id=user.id
+        LEFT JOIN pet ON pet_feed.pet_id=pet.id
+        <include refid="queryConditions"/>
+    </select>
+
+    <!-- 查询条件 -->
+    <sql id="queryConditions">
+        <where>
+            <if test="query.userId != null">
+                AND pet_feed.user_id = #{query.userId}
+            </if>
+            <if test="query.petStoreManagerId != null">
+                AND pet_feed.pet_store_manager_id = #{query.petStoreManagerId}
+            </if>
+            <if test="query.petName != null and query.petName.trim() != ''">
+                AND pet.name LIKE CONCAT('%', #{query.petName}, '%')
+            </if>
+            <if test="query.username != null and query.username.trim() != ''">
+                AND user.username LIKE CONCAT('%', #{query.username}, '%')
+            </if>
+            <if test="query.storeName != null and query.storeName.trim() != ''">
+                AND pet_store_manager.store_name LIKE CONCAT('%', #{query.storeName}, '%')
+            </if>
+            <if test="query.remark != null and query.remark.trim() != ''">
+                AND pet_feed.remark LIKE CONCAT('%', #{query.remark}, '%')
+            </if>
+            <if test="query.status != null and query.status.trim() != ''">
+                AND pet_feed.status = #{query.status}
+            </if>
+        </where>
+    </sql>
+
+    <!-- 插入 -->
+    <insert id="insert" parameterType="com.project.platform.entity.PetFeed" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO pet_feed
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="petId != null">pet_id,</if>
+            <if test="petTypeId != null">pet_type_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="petStoreManagerId != null">pet_store_manager_id,</if>
+            <if test="reservedTime != null">reserved_time,</if>
+            <if test="remark != null">remark,</if>
+            <if test="status != null">status,</if>
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="petId != null">#{petId},</if>
+            <if test="petTypeId != null">#{petTypeId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="petStoreManagerId != null">#{petStoreManagerId},</if>
+            <if test="reservedTime != null">#{reservedTime},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="status != null">#{status},</if>
+        </trim>
+
+
+    </insert>
+
+    <!-- 更新 -->
+    <update id="updateById" parameterType="com.project.platform.entity.PetFeed">
+        UPDATE pet_feed
+        <set>
+            <if test="petId != null">
+                pet_id = #{petId},
+            </if>
+            <if test="petTypeId != null">
+                pet_type_id = #{petTypeId},
+            </if>
+            <if test="userId != null">
+                user_id = #{userId},
+            </if>
+            <if test="petStoreManagerId != null">
+                pet_store_manager_id = #{petStoreManagerId},
+            </if>
+            <if test="reservedTime != null">
+                reserved_time = #{reservedTime},
+            </if>
+            <if test="remark != null">
+                remark = #{remark},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+
+    <!-- 根据ID列表删除 -->
+    <delete id="removeByIds">
+        DELETE FROM pet_feed
+        WHERE id IN
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

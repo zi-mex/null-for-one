@@ -1,0 +1,41 @@
+{
+  "name": "xmszjx-front",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "prod": "vite --mode production",
+    "build-prod": "vite build  --mode production",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@ant-design/icons-vue": "^7.0.1",
+    "@element-plus/icons-vue": "^2.3.1",
+    "@kangc/v-md-editor": "^2.3.18",
+    "@wangeditor/editor": "^5.1.14",
+    "@wangeditor/editor-for-vue": "^5.1.12",
+    "@wocwin/t-ui-plus": "^1.4.13",
+    "axios": "^1.7.5",
+    "crypto-js": "^4.1.1",
+    "dayjs": "^1.11.13",
+    "echarts": "^5.5.1",
+    "element-plus": "^2.8.4",
+    "highlight.js": "11.8.0",
+    "lodash": "^4.17.21",
+    "lunar-javascript": "1.6.12",
+    "pinia": "^2.2.2",
+    "sm-crypto": "^0.3.13",
+    "swiper": "^11.1.14",
+    "vue": "^3.4.29",
+    "vue-router": "^4.4.3"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.0.5",
+    "@vitejs/plugin-vue-jsx": "^4.0.0",
+    "unplugin-element-plus": "^0.8.0",
+    "vite": "^5.3.1",
+    "sass-embedded": "^1.83.4"
+
+  }
+}

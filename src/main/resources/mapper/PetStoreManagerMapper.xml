@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.project.platform.mapper.PetStoreManagerMapper">
+    <!-- 分页查询 -->
+    <select id="queryPage"  resultType="com.project.platform.entity.PetStoreManager">
+        SELECT pet_store_manager.*
+        FROM pet_store_manager
+        <include refid="queryConditions"/>
+        ORDER BY pet_store_manager.id DESC
+        LIMIT #{offset}, #{pageSize}
+    </select>
+    <!-- 查询总数 -->
+    <select id="queryCount"  resultType="int">
+        SELECT count(pet_store_manager.id) FROM pet_store_manager
+        <include refid="queryConditions"/>
+    </select>
+
+    <!-- 查询条件 -->
+    <sql id="queryConditions">
+        <where>
+            <if test="query.username != null and query.username.trim() != ''">
+                AND pet_store_manager.username LIKE CONCAT('%', #{query.username}, '%')
+            </if>
+            <if test="query.tel != null and query.tel.trim() != ''">
+                AND pet_store_manager.tel LIKE CONCAT('%', #{query.tel}, '%')
+            </if>
+            <if test="query.status != null and query.status.trim() != ''">
+                AND pet_store_manager.status = #{query.status}
+            </if>
+            <if test="query.storeName != null and query.storeName.trim() != ''">
+                AND pet_store_manager.store_name LIKE CONCAT('%', #{query.storeName}, '%')
+            </if>
+            <if test="query.storeAddress != null and query.storeAddress.trim() != ''">
+                AND pet_store_manager.store_address LIKE CONCAT('%', #{query.storeAddress}, '%')
+            </if>
+        </where>
+    </sql>
+
+    <!-- 插入 -->
+    <insert id="insert" parameterType="com.project.platform.entity.PetStoreManager" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO pet_store_manager
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="username != null">username,</if>
+            <if test="password != null">password,</if>
+            <if test="nickname != null">nickname,</if>
+            <if test="avatarUrl != null">avatar_url,</if>
+            <if test="tel != null">tel,</if>
+            <if test="email != null">email,</if>
+            <if test="status != null">status,</if>
+            <if test="storeName != null">store_name,</if>
+            <if test="storeImg != null">store_img,</if>
+            <if test="storeAddress != null">store_address,</if>
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="username != null">#{username},</if>
+            <if test="password != null">#{password},</if>
+            <if test="nickname != null">#{nickname},</if>
+            <if test="avatarUrl != null">#{avatarUrl},</if>
+            <if test="tel != null">#{tel},</if>
+            <if test="email != null">#{email},</if>
+            <if test="status != null">#{status},</if>
+            <if test="storeName != null">#{storeName},</if>
+            <if test="storeImg != null">#{storeImg},</if>
+            <if test="storeAddress != null">#{storeAddress},</if>
+        </trim>
+
+
+    </insert>
+
+    <!-- 更新 -->
+    <update id="updateById" parameterType="com.project.platform.entity.PetStoreManager">
+        UPDATE pet_store_manager
+        <set>
+            <if test="username != null">
+                username = #{username},
+            </if>
+            <if test="password != null">
+                password = #{password},
+            </if>
+            <if test="nickname != null">
+                nickname = #{nickname},
+            </if>
+            <if test="avatarUrl != null">
+                avatar_url = #{avatarUrl},
+            </if>
+            <if test="tel != null">
+                tel = #{tel},
+            </if>
+            <if test="email != null">
+                email = #{email},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="storeName != null">
+                store_name = #{storeName},
+            </if>
+            <if test="storeImg != null">
+                store_img = #{storeImg},
+            </if>
+            <if test="storeAddress != null">
+                store_address = #{storeAddress},
+            </if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+
+    <!-- 根据ID列表删除 -->
+    <delete id="removeByIds">
+        DELETE FROM pet_store_manager
+        WHERE id IN
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
+

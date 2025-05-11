@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.project.platform.mapper.PetMapper">
+    <!-- 分页查询 -->
+    <select id="queryPage"  resultType="com.project.platform.entity.Pet">
+        SELECT pet.*,pet_type.name AS petTypeName,user.username AS username
+        FROM pet
+        LEFT JOIN pet_type ON pet.pet_type_id=pet_type.id
+        LEFT JOIN user ON pet.user_id=user.id
+        <include refid="queryConditions"/>
+        ORDER BY pet.id DESC
+        LIMIT #{offset}, #{pageSize}
+    </select>
+    <!-- 查询总数 -->
+    <select id="queryCount"  resultType="int">
+        SELECT count(pet.id) FROM pet
+        LEFT JOIN pet_type ON pet.pet_type_id=pet_type.id
+        LEFT JOIN user ON pet.user_id=user.id
+        <include refid="queryConditions"/>
+    </select>
+
+    <!-- 查询条件 -->
+    <sql id="queryConditions">
+        <where>
+            <if test="query.name != null and query.name.trim() != ''">
+                AND pet.name LIKE CONCAT('%', #{query.name}, '%')
+            </if>
+            <if test="query.userId != null">
+                AND pet.user_id = #{query.userId}
+            </if>
+            <if test="query.petTypeId != null">
+                AND pet.pet_type_id = #{query.petTypeId}
+            </if>
+            <if test="query.username != null and query.username.trim() != ''">
+                AND user.username LIKE CONCAT('%', #{query.username}, '%')
+            </if>
+        </where>
+    </sql>
+
+    <!-- 插入 -->
+    <insert id="insert" parameterType="com.project.platform.entity.Pet" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO pet
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">name,</if>
+            <if test="mainImg != null">main_img,</if>
+            <if test="petTypeId != null">pet_type_id,</if>
+            <if test="basicInfo != null">basic_info,</if>
+            <if test="userId != null">user_id,</if>
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">#{name},</if>
+            <if test="mainImg != null">#{mainImg},</if>
+            <if test="petTypeId != null">#{petTypeId},</if>
+            <if test="basicInfo != null">#{basicInfo},</if>
+            <if test="userId != null">#{userId},</if>
+        </trim>
+
+
+    </insert>
+
+    <!-- 更新 -->
+    <update id="updateById" parameterType="com.project.platform.entity.Pet">
+        UPDATE pet
+        <set>
+            <if test="name != null">
+                name = #{name},
+            </if>
+            <if test="mainImg != null">
+                main_img = #{mainImg},
+            </if>
+            <if test="petTypeId != null">
+                pet_type_id = #{petTypeId},
+            </if>
+            <if test="basicInfo != null">
+                basic_info = #{basicInfo},
+            </if>
+            <if test="userId != null">
+                user_id = #{userId},
+            </if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+
+    <!-- 根据ID列表删除 -->
+    <delete id="removeByIds">
+        DELETE FROM pet
+        WHERE id IN
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

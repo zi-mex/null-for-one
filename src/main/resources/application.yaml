@@ -1,0 +1,38 @@
+server:
+  ip: localhost
+  port: 1000
+spring:
+  main:
+    allow-circular-references: true #允许循环引用
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/pet-system?useUnicode=true&useSSL=false&characterEncoding=utf8&serverTimezone=Asia/Shanghai
+    username: root
+    password: 123456654321
+  servlet:
+    multipart:
+      max-file-size: 100MB # 文件上传大小限制，设置最大值，不能超过该值，否则报错
+      max-request-size: 1000MB # 文件最大请求限制，用于批量上传
+
+  jackson: # Jackson库配置
+    date-format: "yyyy-MM-dd HH:mm:ss" # 设置日期格式为"年-月-日 时:分:秒"
+    serialization:
+      write-dates-as-timestamps: false # 关闭日期序列化为时间戳的功能
+    time-zone: Asia/Shanghai
+mybatis:
+  mapper-locations: classpath:mapper/*Mapper.xml
+  configuration:
+    map-underscore-to-camel-case: true #启用驼峰命名转换
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl # 打印SQL到控制台
+  logging:
+    level: debug # 设置MyBatis的日志级别为DEBUG以打印SQL语句
+resetPassword: 123456
+spring.main.all-circular-references: true
+
+
+files:
+  uploads:
+    path: uploads/
+    baseUrl: http://localhost:1000/file
+
+

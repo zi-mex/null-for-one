@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.project.platform.mapper.ProductOrderMapper">
+    <!-- 分页查询 -->
+    <select id="queryPage"  resultType="com.project.platform.entity.ProductOrder">
+        SELECT product_order.*,product.name AS productName,user.username AS username
+        FROM product_order
+        LEFT JOIN product ON product_order.product_id=product.id
+        LEFT JOIN user ON product_order.user_id=user.id
+        <include refid="queryConditions"/>
+        ORDER BY product_order.id DESC
+        LIMIT #{offset}, #{pageSize}
+    </select>
+    <!-- 查询总数 -->
+    <select id="queryCount"  resultType="int">
+        SELECT count(product_order.id) FROM product_order
+        LEFT JOIN product ON product_order.product_id=product.id
+        LEFT JOIN user ON product_order.user_id=user.id
+        <include refid="queryConditions"/>
+    </select>
+
+    <!-- 查询条件 -->
+    <sql id="queryConditions">
+        <where>
+            <if test="query.username != null and query.username.trim() != ''">
+                AND user.username LIKE CONCAT('%', #{query.username}, '%')
+            </if>
+            <if test="query.userId != null">
+                AND product_order.user_id = #{query.userId}
+            </if>
+            <if test="query.status != null and query.status.trim() != ''">
+                AND product_order.status = #{query.status}
+            </if>
+            <if test="query.nameOfConsignee != null and query.nameOfConsignee.trim() != ''">
+                AND product_order.name_of_consignee LIKE CONCAT('%', #{query.nameOfConsignee}, '%')
+            </if>
+        </where>
+    </sql>
+
+    <!-- 插入 -->
+    <insert id="insert" parameterType="com.project.platform.entity.ProductOrder" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO product_order
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="productId != null">product_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="price != null">price,</if>
+            <if test="status != null">status,</if>
+            <if test="nameOfConsignee != null">name_of_consignee,</if>
+            <if test="telOfConsignee != null">tel_of_consignee,</if>
+            <if test="addressOfConsignee != null">address_of_consignee,</if>
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="productId != null">#{productId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="price != null">#{price},</if>
+            <if test="status != null">#{status},</if>
+            <if test="nameOfConsignee != null">#{nameOfConsignee},</if>
+            <if test="telOfConsignee != null">#{telOfConsignee},</if>
+            <if test="addressOfConsignee != null">#{addressOfConsignee},</if>
+        </trim>
+
+
+    </insert>
+
+    <!-- 更新 -->
+    <update id="updateById" parameterType="com.project.platform.entity.ProductOrder">
+        UPDATE product_order
+        <set>
+            <if test="productId != null">
+                product_id = #{productId},
+            </if>
+            <if test="userId != null">
+                user_id = #{userId},
+            </if>
+            <if test="price != null">
+                price = #{price},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="nameOfConsignee != null">
+                name_of_consignee = #{nameOfConsignee},
+            </if>
+            <if test="telOfConsignee != null">
+                tel_of_consignee = #{telOfConsignee},
+            </if>
+            <if test="addressOfConsignee != null">
+                address_of_consignee = #{addressOfConsignee},
+            </if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+
+    <!-- 根据ID列表删除 -->
+    <delete id="removeByIds">
+        DELETE FROM product_order
+        WHERE id IN
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
